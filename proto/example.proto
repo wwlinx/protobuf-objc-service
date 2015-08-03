@@ -1,0 +1,38 @@
+import "google/protobuf/dx_options.proto";
+import "google/protobuf/objectivec-descriptor.proto";
+
+package com.example;
+option java_package = "com.example";
+option java_outer_classname = "MyExample";
+option (google.protobuf.objectivec_file_options).class_prefix = "FF";
+
+enum AccountType {
+  CHECKING = 0;
+  SAVINGS = 1;
+}
+
+message GetBalanceRequest {
+  optional string user_id = 1;
+  optional bool include_all_accounts = 2;
+}
+
+message GetBalanceResponse {
+  message AccountBalance {
+    optional AccountType account_type = 1;
+    optional double balance = 2;
+  }
+
+  optional AccountBalance primary_account = 1;
+  optional double total_balance = 2;
+  repeated string names = 3;
+  repeated int32  ids = 6;
+  repeated AccountBalance balances = 4;
+  optional bytes buf = 5;
+}
+
+service Bank {
+  rpc GetBalanceCall (GetBalanceRequest) returns (GetBalanceResponse) {
+    option (dx_method_options).path = "/user/:userId/get_balance";
+    option (dx_method_options).http_method = "POST";
+  }
+}
